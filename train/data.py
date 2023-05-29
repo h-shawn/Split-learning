@@ -7,30 +7,6 @@ import torch.utils.data as Data
 import torchvision
 import torchvision.transforms as transforms
 
-# transform_train = transforms.Compose([
-#     transforms.RandomCrop(32, padding=4),
-#     transforms.RandomHorizontalFlip(),
-#     transforms.ToTensor(),
-#     transforms.Normalize((0.4914, 0.4822, 0.4465),
-#                          (0.2023, 0.1994, 0.2010)),
-# ])
-
-# transform_test = transforms.Compose([
-#     transforms.ToTensor(),
-#     transforms.Normalize((0.4914, 0.4822, 0.4465),
-#                          (0.2023, 0.1994, 0.2010)),
-# ])
-
-# trainset = torchvision.datasets.CIFAR10(
-#     root='./data', train=True, download=True, transform=transform_train)
-# trainloader = torch.utils.data.DataLoader(
-#     trainset, batch_size=128, shuffle=True, num_workers=2)
-
-# testset = torchvision.datasets.CIFAR10(
-#     root='./data', train=False, download=True, transform=transform_test)
-# testloader = torch.utils.data.DataLoader(
-#     testset, batch_size=100, shuffle=False, num_workers=2)
-
 
 def get_data_loader():
     train_x, train_y, train_l = get_data_set("train")
@@ -50,9 +26,7 @@ def get_data_loader():
 
 
 def get_data_set(name="train"):
-    x = None
-    y = None
-    l = None
+    x, y, l = None, None, None
 
     folder_name = "cifar-10-batches-py"
     f = open('data/'+folder_name+'/batches.meta', 'rb')
@@ -72,9 +46,6 @@ def get_data_set(name="train"):
             _X = np.array(_X, dtype=float) / 255.0
             _X = _X.reshape([-1, 3, 32, 32])
             _X = _X.transpose([0, 1, 2, 3])
-            # _X = transforms.ToTensor()(_X)
-            # _X = _X.reshape([-1, 3, 32, 32])
-            # _X = transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))(_X)
 
             if x is None:
                 x = _X
@@ -94,8 +65,5 @@ def get_data_set(name="train"):
         x = np.array(x, dtype=float) / 255.0
         x = x.reshape([-1, 3, 32, 32])
         x = x.transpose([0, 1, 2, 3])
-        # x = transforms.ToTensor()(x)
-        # x = x.reshape([-1, 3, 32, 32])
-        # x = transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))(x)
 
     return x, y, l

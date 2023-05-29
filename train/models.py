@@ -34,7 +34,7 @@ class VGG(nn.Module):
                 else:
                     x = self.classifier[startLayer - self.layers_num](x)
             else:
-                for i in range(startLayer, endLayer+1):
+                for i in range(startLayer, endLayer + 1):
                     if i < self.layers_num:
                         x = self.features[i](x)
                     elif i == self.layers_num:
@@ -62,69 +62,78 @@ class VGG(nn.Module):
         print(f"number of layers: {self.layers_num}")
         return nn.Sequential(*layers)
 
-class VGG16(nn.Module):
+
+def VGG11():
+    return VGG('VGG11')
+
+
+def VGG13():
+    return VGG('VGG13')
+
+
+def VGG16():
+    return VGG('VGG16')
+
+
+def VGG19():
+    return VGG('VGG19')
+
+
+class AlexNet(nn.Module):
     def __init__(self):
-        super(VGG16, self).__init__()
+        super(AlexNet, self).__init__()
         self.features = nn.Sequential(
-            nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(64),
-            nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(64),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-            nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(128),
-            nn.Conv2d(128, 128, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(128),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-            nn.Conv2d(128, 256, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(256),
-            nn.Conv2d(256, 256, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(256),
-            nn.Conv2d(256, 256, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(256),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-            nn.Conv2d(256, 512, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(512),
-            nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(512),
-            nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(512),
-            nn.MaxPool2d(kernel_size=2, stride=2),
-            nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(512),
-            nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(512),
-            nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(512),
-            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Conv2d(3, 64, kernel_size=3, stride=2, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2),
+            nn.Conv2d(64, 192, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2),
+            nn.Conv2d(192, 384, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(384, 256, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(256, 256, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2),
         )
         self.classifier = nn.Sequential(
-            nn.Linear(512, 4096),
+            nn.Dropout(),
+            nn.Linear(1024, 4096),
+            nn.ReLU(inplace=True),
+            nn.Dropout(),
             nn.Linear(4096, 4096),
+            nn.ReLU(inplace=True),
             nn.Linear(4096, 10),
         )
+
+    def forward(self, x):
+        x = self.features(x)
+        x = x.view(x.size(0), 1024)
+        x = self.classifier(x)
+        return x
 
     def forward(self, x, startLayer, endLayer, isTrain):
         if isTrain:
             x = self.features(x)
-            x = x.view(x.size(0), 512)
+            x = x.view(x.size(0), 1024)
             x = self.classifier(x)
         else:
             if startLayer == endLayer:
-                if startLayer == 31:
-                    x = x.view(x.size(0), 512)
-                    x = self.classifier[startLayer-31](x)
-                elif startLayer < 31:
+                if startLayer == 13:
+                    x = x.view(x.size(0), 1024)
+                    x = self.classifier[startLayer-13](x)
+                elif startLayer < 13:
                     x = self.features[startLayer](x)
                 else:
-                    x = self.classifier[startLayer-31](x)
+                    x = self.classifier[startLayer-13](x)
             else:
-                for i in range(startLayer, endLayer+1):
-                    if i < 31:
+                for i in range(startLayer, endLayer + 1):
+                    if i < 13:
                         x = self.features[i](x)
-                    elif i == 31:
-                        x = x.view(x.size(0), 512)
-                        x = self.classifier[i-31](x)
+                    elif i == 13:
+                        x = x.view(x.size(0), 1024)
+                        x = self.classifier[i-13](x)
                     else:
-                        x = self.classifier[i-31](x)
+                        x = self.classifier[i-13](x)
         return x

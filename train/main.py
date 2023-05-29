@@ -72,10 +72,10 @@ def test(epoch):
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='PyTorch CIFAR10 Training')
-    parser.add_argument('--epoch', default=20, type=int,
-                        help='epoch for train')
-    parser.add_argument('--lr', default=0.1, type=float, help='learning rate')
-    parser.add_argument('--model', default='VGG16',
+    parser.add_argument('--epoch', default=100,
+                        type=int, help='epoch for train')
+    parser.add_argument('--lr', default=1e-2, type=float, help='learning rate')
+    parser.add_argument('--model', default='AlexNet',
                         type=str, help='model name')
     parser.add_argument('--resume', '-r', action='store_true',
                         help='resume from checkpoint')
@@ -95,7 +95,10 @@ if __name__ == '__main__':
 
     # Model
     print('==> Building model..')
-    net = VGG(args.model).to(device)
+    if args.model == 'VGG16':
+        net = VGG16().to(device)
+    elif args.model == 'AlexNet':
+        net = AlexNet().to(device)
     # if device == 'cuda':
     #     net = torch.nn.DataParallel(net)
     #     cudnn.benchmark = True

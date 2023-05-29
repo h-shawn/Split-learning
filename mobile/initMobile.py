@@ -106,7 +106,7 @@ if __name__ == "__main__":
     # For AlexNet
     x = [1 for i in range(20)]
     # For VGG16
-    x = [1 for i in range(46)]
+    # x = [1 for i in range(46)]
     print("开始运行计算任务")
     start = time.time()
     if x[0] == 1:

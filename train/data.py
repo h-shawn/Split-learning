@@ -28,15 +28,16 @@ def get_data_loader():
 def get_data_set(name="train"):
     x, y, l = None, None, None
 
-    folder_name = "cifar-10-batches-py"
-    f = open('data/'+folder_name+'/batches.meta', 'rb')
+    folder_name = "cifar-10"
+    f = open('../datasets/'+folder_name+'/batches.meta', 'rb')
     datadict = pickle.load(f, encoding='latin1')
     f.close()
     l = datadict['label_names']
 
     if name == "train":
         for i in range(5):
-            f = open('data/'+folder_name+'/data_batch_' + str(i + 1), 'rb')
+            f = open('../datasets/'+folder_name +
+                     '/data_batch_' + str(i + 1), 'rb')
             datadict = pickle.load(f, encoding='latin1')
             f.close()
 
@@ -55,7 +56,7 @@ def get_data_set(name="train"):
                 y = np.concatenate((y, _Y), axis=0)
 
     elif name == "test":
-        f = open('data/'+folder_name+'/test_batch', 'rb')
+        f = open('../datasets/'+folder_name+'/test_batch', 'rb')
         datadict = pickle.load(f, encoding='latin1')
         f.close()
 
